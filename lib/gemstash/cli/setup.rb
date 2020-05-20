@@ -68,7 +68,15 @@ module Gemstash
       end
 
       def ask_storage
-        say_current_config(:base_path, "Current base path")
+        say_current_config(:storage_service, "Current storage option")
+        @config[:storage_service] = ask_with_default("What storage service would you like to use?", %w[local], "local")
+        if @config[:storage_service] == "local"
+          ask_local_storage_details()
+        end
+      end
+
+      def ask_local_storage_details
+        say_current_config(:base_path, "Current storage path")
         path = @cli.ask "Where should files go? [~/.gemstash]", path: true
         path = Gemstash::Configuration::DEFAULTS[:base_path] if path.empty?
         @config[:base_path] = File.expand_path(path)
